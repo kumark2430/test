@@ -14,8 +14,8 @@ const DEFAULT_ZONES = ["Hosur", "Shoolagiri", "Denkanikottai", "Veppanapalli"];
  */
 function configureRTS() {
   const username = "kumar";
-  const password = "kumar@123";
-  if (password === "CHANGE_THIS_TO_A_STRONG_PASSWORD") {
+  const password = "Kumar@123456";
+  if (password === "Kumar@123456") {
     throw new Error("Set a strong password in configureRTS before running it.");
   }
   PropertiesService.getScriptProperties().setProperties({
