@@ -20,7 +20,7 @@ function configureRTS() {
   }
   PropertiesService.getScriptProperties().setProperties({
     RTS_ADMIN_USER: username,
-    RTS_ADMIN_PASSWORD: kumar@123
+    RTS_ADMIN_PASSWORD: kumar123
   });
   ensureSheets_();
 }
