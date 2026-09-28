@@ -13,14 +13,14 @@ const DEFAULT_ZONES = ["Hosur", "Shoolagiri", "Denkanikottai", "Veppanapalli"];
  * 3. Deploy as a Web app, executing as you, with access set to Anyone.
  */
 function configureRTS() {
-  const username = "Mani";
+  const username = "kumar";
   const password = "CHANGE_THIS_TO_A_STRONG_PASSWORD";
   if (password === "CHANGE_THIS_TO_A_STRONG_PASSWORD") {
     throw new Error("Set a strong password in configureRTS before running it.");
   }
   PropertiesService.getScriptProperties().setProperties({
     RTS_ADMIN_USER: username,
-    RTS_ADMIN_PASSWORD: password
+    RTS_ADMIN_PASSWORD: kumar@123
   });
   ensureSheets_();
 }
