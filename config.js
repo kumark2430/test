@@ -1,3 +1,3 @@
 window.RTS_CONFIG = {
-  apiUrl: "https://script.google.com/macros/s/AKfycbzPx3HHngirptA9C4dtakzlPJzThIDlUZGpEgN9oaRSeKT7XxSf4r8CbRxB_hR43GHO/exec"
+  apiUrl: "https://script.google.com/macros/s/AKfycbxDGqi4m2a2z0-NhdLnTd4j6BiDoYgg_X5RIyqnNFv4_rygHlcW1lKcYedPAZVWsy-H/exec"
 };
