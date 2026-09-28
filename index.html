@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTS Project — Krishnagiri District</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='1' y='1' width='38' height='38' rx='9' fill='%231E3A5F'/%3E%3Cg stroke='%23F6F5F0' stroke-width='1.8' fill='none'%3E%3Cline x1='20' y1='20' x2='30' y2='10'/%3E%3Cline x1='20' y1='20' x2='30' y2='30'/%3E%3Cline x1='20' y1='20' x2='10' y2='30'/%3E%3Cline x1='20' y1='20' x2='10' y2='10'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='5.2' fill='%23F6F5F0'/%3E%3Ccircle cx='30' cy='10' r='3.2' fill='%23F6F5F0'/%3E%3Ccircle cx='30' cy='30' r='3.2' fill='%23F6F5F0'/%3E%3Ccircle cx='10' cy='30' r='3.2' fill='%23F6F5F0'/%3E%3Ccircle cx='10' cy='10' r='3.2' fill='%23F6F5F0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F6F5F0;
+    --bg-panel: #FFFFFF;
+    --bg-panel-2: #EFEDE5;
+    --line: #DBD7C9;
+    --text: #24282B;
+    --text-muted: #656B6F;
+    --primary: #1E3A5F;
+    --primary-strong: #16283F;
+    --on-primary: #F6F5F0;
+    --active: #2F7D5D;
+    --active-bg: rgba(47,125,93,0.12);
+    --relieved: #A8672A;
+    --relieved-bg: rgba(168,103,42,0.13);
+    --danger: #A5382F;
+    --danger-bg: rgba(165,56,47,0.1);
+    --radius: 6px;
+    --font-head: 'Source Serif 4', Georgia, serif;
+    --font-body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  }
+  :root:not([data-theme="light"]){ color-scheme: dark light; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #12161B;
+      --bg-panel: #1A2028;
+      --bg-panel-2: #212832;
+      --line: #313A45;
+      --text: #E7EAEE;
+      --text-muted: #97A2AD;
+      --primary: #7FA3CC;
+      --primary-strong: #5A82AE;
+      --on-primary: #0F151B;
+      --active: #56B48B;
+      --active-bg: rgba(86,180,139,0.14);
+      --relieved: #DE9E5B;
+      --relieved-bg: rgba(222,158,91,0.14);
+      --danger: #E17F76;
+      --danger-bg: rgba(225,127,118,0.12);
+    }
+  }
+  :root[data-theme="dark"]{
+      --bg: #12161B;
+      --bg-panel: #1A2028;
+      --bg-panel-2: #212832;
+      --line: #313A45;
+      --text: #E7EAEE;
+      --text-muted: #97A2AD;
+      --primary: #7FA3CC;
+      --primary-strong: #5A82AE;
+      --on-primary: #0F151B;
+      --active: #56B48B;
+      --active-bg: rgba(86,180,139,0.14);
+      --relieved: #DE9E5B;
+      --relieved-bg: rgba(222,158,91,0.14);
+      --danger: #E17F76;
+      --danger-bg: rgba(225,127,118,0.12);
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+  button{ font-family: inherit; cursor: pointer; }
+  input, select{ font-family: inherit; }
+
+  /* ---------- Header ---------- */
+  header{ border-bottom: 1px solid var(--line); padding: 30px 0 22px; margin-bottom: 26px; position: relative; overflow: hidden; }
+  .header-bg{ position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .head-row{ display:flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 18px; position: relative; z-index: 1; }
+  .btn-icon{ width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+  .btn-icon svg{ width: 17px; height: 17px; stroke: var(--text); }
+  .brand-row{ display:flex; align-items:center; gap: 14px; }
+  .brand-mark{ flex: none; line-height: 0; }
+  .brand-mark svg{ display:block; }
+  .title-block h1{ font-family: var(--font-head); font-weight: 600; font-size: 32px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .title-block p{ margin: 0; color: var(--text-muted); font-size: 14.5px; }
+  .head-actions{ display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap: 10px; }
+  .btn{ border: none; border-radius: var(--radius); padding: 9px 16px; font-size: 14px; font-weight: 500; }
+  .btn-primary{ background: var(--primary); color: var(--on-primary); }
+  .btn-primary:hover{ background: var(--primary-strong); }
+  .btn-ghost{ background: transparent; border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--primary); color: var(--primary); }
+  .btn-danger-text{ background:none; border:none; color: var(--danger); font-size: 13px; padding: 4px 6px; }
+  .btn-text{ background:none; border:none; color: var(--primary); font-size: 13px; padding: 4px 6px; }
+
+  /* ---------- Login ---------- */
+  .login-screen{ min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .login-card{ width: 100%; max-width: 340px; border: 1px solid var(--line); background: var(--bg-panel); border-radius: 10px; padding: 30px 28px 26px; text-align: center; }
+  .login-card .brand-mark{ display: flex; justify-content: center; margin-bottom: 16px; }
+  .login-card h1{ font-family: var(--font-head); font-size: 22px; font-weight: 600; margin: 0 0 6px; }
+  .login-card p{ color: var(--text-muted); font-size: 13.5px; margin: 0 0 20px; }
+  .login-card form{ text-align: left; }
+  #loginError{ text-align: left; }
+
+  .zone-tab-add{ background: none; border: 1px dashed var(--line); color: var(--text-muted); padding: 6px 13px; border-radius: 999px; font-size: 13px; margin: 4px 0 4px 6px; }
+  .zone-tab-add:hover{ border-color: var(--primary); color: var(--primary); }
+
+  /* ---------- Stat strip ---------- */
+  .stats{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 30px; }
+  .stat-card{ border: 1px solid var(--line); background: var(--bg-panel); border-radius: var(--radius); padding: 14px 16px; }
+  .stat-card .n{ font-family: var(--font-head); font-size: 26px; font-weight: 600; color: var(--primary); }
+  .stat-card .l{ font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ---------- Zone tabs ---------- */
+  .zone-tabs{ display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 14px; flex-wrap: wrap; }
+  .zone-tab{ background: none; border: none; padding: 10px 16px; font-size: 14.5px; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .zone-tab.active{ color: var(--text); border-bottom-color: var(--primary); font-weight: 500; }
+  .zone-tab:hover{ color: var(--text); }
+
+  /* ---------- Category tabs + filters ---------- */
+  .filter-row{ display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 18px; }
+  .cat-tabs{ display: flex; gap: 6px; flex-wrap: wrap; }
+  .cat-tab{ border: 1px solid var(--line); background: var(--bg-panel); color: var(--text-muted); padding: 6px 13px; border-radius: 999px; font-size: 13px; }
+  .cat-tab.active{ background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+  .right-filters{ display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+  .search-input{ border: 1px solid var(--line); background: var(--bg-panel); color: var(--text); border-radius: var(--radius); padding: 7px 11px; font-size: 13.5px; width: 200px; }
+  .status-select{ border: 1px solid var(--line); background: var(--bg-panel); color: var(--text); border-radius: var(--radius); padding: 7px 11px; font-size: 13.5px; }
+
+  /* ---------- Table ---------- */
+  .table-wrap{ border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-panel); overflow-x: auto; }
+  table{ width: 100%; border-collapse: collapse; min-width: 720px; }
+  thead th{ text-align: left; font-size: 12.5px; font-weight: 500; color: var(--text-muted); padding: 12px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  tbody td{ padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tbody tr:last-child td{ border-bottom: none; }
+  tbody tr:hover{ background: var(--bg-panel-2); }
+  .emp-name{ font-weight: 500; }
+  .emp-sub{ color: var(--text-muted); font-size: 12.5px; margin-top: 1px; }
+  .badge{ display: inline-block; font-size: 12px; padding: 3px 9px; border-radius: 999px; font-weight: 500; }
+  .badge-active{ background: var(--active-bg); color: var(--active); }
+  .badge-relieved{ background: var(--relieved-bg); color: var(--relieved); }
+  .cat-pill{ font-size: 12px; color: var(--text-muted); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; }
+  .actions-cell{ white-space: nowrap; text-align: right; }
+  .confirm-row{ display:inline-flex; gap: 6px; align-items:center; }
+  .confirm-row span{ font-size: 12.5px; color: var(--danger); }
+
+  .empty-state{ padding: 60px 20px; text-align: center; color: var(--text-muted); }
+  .empty-state .big{ font-family: var(--font-head); font-size: 19px; color: var(--text); margin-bottom: 6px; }
+
+  .storage-note{
+    border: 1px solid var(--line);
+    background: var(--bg-panel);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .storage-note{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .sync-status{ display:inline-flex; align-items:center; gap:7px; font-weight:500; color:var(--active); }
+  .sync-status::before{ content:""; width:8px; height:8px; border-radius:50%; background:currentColor; }
+  .sync-status.loading{ color:var(--relieved); }
+  .sync-status.error{ color:var(--danger); }
+  button:disabled{ opacity:.55; cursor:not-allowed; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{ position: fixed; inset: 0; background: rgba(10,12,14,0.45); display: none; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; z-index: 100; }
+  .modal-overlay.open{ display: flex; }
+  .modal{ background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--line); width: 100%; max-width: 460px; padding: 26px 26px 22px; }
+  .modal h2{ font-family: var(--font-head); font-size: 20px; font-weight: 600; margin: 0 0 18px; }
+  .field{ margin-bottom: 14px; }
+  .field label{ display:block; font-size: 12.5px; color: var(--text-muted); margin-bottom: 5px; }
+  .field input, .field select, .field textarea{ width: 100%; border: 1px solid var(--line); background: var(--bg); color: var(--text); border-radius: var(--radius); padding: 9px 11px; font-size: 14px; }
+  .field textarea{ resize: vertical; min-height: 54px; }
+  .field-row{ display:flex; gap: 12px; }
+  .field-row .field{ flex: 1; }
+  .field-error{ font-size: 12px; color: var(--danger); margin-top: 4px; display:none; }
+  .field-error.show{ display: block; }
+  .modal-actions{ display:flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+  footer{ border-top: 1px solid var(--line); margin-top: 46px; padding-top: 18px; color: var(--text-muted); font-size: 12.5px; }
+
+  @media (max-width: 720px){
+    .stats{ grid-template-columns: repeat(2, 1fr); }
+    .filter-row{ align-items: flex-start; }
+    .search-input{ width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 40 40" width="40" height="40">
+        <rect x="1" y="1" width="38" height="38" rx="9" fill="var(--primary)"/>
+        <g stroke="var(--on-primary)" stroke-width="1.6" fill="none">
+          <line x1="20" y1="20" x2="30" y2="10"/>
+          <line x1="20" y1="20" x2="30" y2="30"/>
+          <line x1="20" y1="20" x2="10" y2="30"/>
+          <line x1="20" y1="20" x2="10" y2="10"/>
+        </g>
+        <circle cx="20" cy="20" r="5.2" fill="var(--on-primary)"/>
+        <circle cx="30" cy="10" r="3.2" fill="var(--on-primary)"/>
+        <circle cx="30" cy="30" r="3.2" fill="var(--on-primary)"/>
+        <circle cx="10" cy="30" r="3.2" fill="var(--on-primary)"/>
+        <circle cx="10" cy="10" r="3.2" fill="var(--on-primary)"/>
+      </svg>
+    </div>
+    <h1>RTS project</h1>
+    <p>Sign in to manage Krishnagiri district employee records.</p>
+    <form id="loginForm">
+      <div class="field">
+        <label for="l_user">Username</label>
+        <input id="l_user" type="text" autocomplete="username" autocapitalize="off" required>
+      </div>
+      <div class="field">
+        <label for="l_pass">Password</label>
+        <input id="l_pass" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="field-error" id="loginError">Incorrect username or password.</div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:4px">Sign in</button>
+    </form>
+  </div>
+</div>
+
+<div id="appRoot" style="display:none">
+<div class="wrap">
+  <header>
+    <svg class="header-bg" preserveAspectRatio="none" viewBox="0 0 1180 130" aria-hidden="true">
+      <defs>
+        <pattern id="idPattern" width="74" height="74" patternUnits="userSpaceOnUse">
+          <rect x="10" y="16" width="26" height="34" rx="4" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+          <circle cx="23" cy="28" r="5" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+          <line x1="14" y1="40" x2="32" y2="40" stroke="var(--line)" stroke-width="1.4"/>
+          <line x1="14" y1="45" x2="28" y2="45" stroke="var(--line)" stroke-width="1.4"/>
+        </pattern>
+        <linearGradient id="idFade" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+          <stop offset="0.45" stop-color="#fff" stop-opacity="0"/>
+          <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+        </linearGradient>
+        <mask id="idMask">
+          <rect width="1180" height="130" fill="url(#idFade)"/>
+        </mask>
+      </defs>
+      <rect width="1180" height="130" fill="url(#idPattern)" mask="url(#idMask)" opacity="0.7"/>
+    </svg>
+    <div class="head-row">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="38" height="38">
+            <rect x="1" y="1" width="38" height="38" rx="9" fill="var(--primary)"/>
+            <g stroke="var(--on-primary)" stroke-width="1.6" fill="none">
+              <line x1="20" y1="20" x2="30" y2="10"/>
+              <line x1="20" y1="20" x2="30" y2="30"/>
+              <line x1="20" y1="20" x2="10" y2="30"/>
+              <line x1="20" y1="20" x2="10" y2="10"/>
+            </g>
+            <circle cx="20" cy="20" r="5.2" fill="var(--on-primary)"/>
+            <circle cx="30" cy="10" r="3.2" fill="var(--on-primary)"/>
+            <circle cx="30" cy="30" r="3.2" fill="var(--on-primary)"/>
+            <circle cx="10" cy="30" r="3.2" fill="var(--on-primary)"/>
+            <circle cx="10" cy="10" r="3.2" fill="var(--on-primary)"/>
+          </svg>
+        </div>
+        <div class="title-block">
+          <h1>RTS project — Krishnagiri district</h1>
+          <p>Employee records across zones, for Wellness, Sports and RS teams</p>
+        </div>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-ghost btn-icon" id="themeToggle" aria-label="Switch between light and dark theme" title="Switch theme">
+          <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" style="display:none">
+            <circle cx="12" cy="12" r="4.2"/>
+            <line x1="12" y1="2.5" x2="12" y2="5"/>
+            <line x1="12" y1="19" x2="12" y2="21.5"/>
+            <line x1="2.5" y1="12" x2="5" y2="12"/>
+            <line x1="19" y1="12" x2="21.5" y2="12"/>
+            <line x1="5.1" y1="5.1" x2="6.8" y2="6.8"/>
+            <line x1="17.2" y1="17.2" x2="18.9" y2="18.9"/>
+            <line x1="5.1" y1="18.9" x2="6.8" y2="17.2"/>
+            <line x1="17.2" y1="6.8" x2="18.9" y2="5.1"/>
+          </svg>
+          <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M20 14.2A8.5 8.5 0 1 1 9.8 4a6.7 6.7 0 0 0 10.2 10.2z"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost" id="logoutBtn">Sign out</button>
+        <a class="btn btn-ghost" style="text-decoration:none" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTUi7OLSDxmEDl_DTlqjO3IeZ1N8yywy1AQ4NHrbC-hfYMgbFo2yF5hV2op9X1RV-MRIcCkQxKzX5wk/pubhtml" target="_blank" rel="noopener">Reference sheet ↗</a>
+        <button class="btn btn-ghost" id="importBtn" type="button">Import CSV/Excel</button>
+        <input id="importFile" type="file" accept=".csv,.xlsx,.xls" hidden>
+        <a class="btn btn-ghost" style="text-decoration:none" href="./employee-import-template.csv" download>Import template</a>
+        <button class="btn btn-ghost" id="exportBtn">Export CSV</button>
+        <button class="btn btn-primary" id="addBtn">Add employee</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="storage-note">
+    <span>Employee records are stored in the connected Google Sheet and shared across devices.</span>
+    <span class="sync-status loading" id="syncStatus">Connecting…</span>
+  </div>
+
+  <div class="stats" id="statsRow"></div>
+
+  <div class="zone-tabs" id="zoneTabs"></div>
+
+  <div class="filter-row">
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="right-filters">
+      <input class="search-input" id="searchInput" type="text" placeholder="Search name, role or phone">
+      <select class="status-select" id="statusFilter">
+        <option value="all">All statuses</option>
+        <option value="active">Active only</option>
+        <option value="relieved">Relieved only</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="empTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th id="catColHeader">Category</th>
+          <th>Zone</th>
+          <th>Phone</th>
+          <th>Joined</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="empTbody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="big">No employees here yet</div>
+      <div>Add the first employee for this zone and category.</div>
+    </div>
+  </div>
+
+  <footer>RTS project · Krishnagiri district administration</footer>
+</div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add employee</h2>
+    <form id="empForm">
+      <div class="field">
+        <label for="f_name">Full name</label>
+        <input id="f_name" type="text" required>
+        <div class="field-error" id="err_name">Enter the employee's name.</div>
+      </div>
+      <div class="field">
+        <label for="f_designation">Designation</label>
+        <input id="f_designation" type="text" placeholder="e.g. Coach, Trainer, Field Officer">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f_zone">Zone</label>
+          <select id="f_zone" required></select>
+        </div>
+        <div class="field">
+          <label for="f_category">Category</label>
+          <select id="f_category" required>
+            <option value="Wellness">Wellness</option>
+            <option value="Sports">Sports</option>
+            <option value="RS">RS</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f_phone">Phone</label>
+          <input id="f_phone" type="text" placeholder="10-digit number">
+        </div>
+        <div class="field">
+          <label for="f_joinDate">Join date</label>
+          <input id="f_joinDate" type="date">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f_status">Status</label>
+        <select id="f_status">
+          <option value="active">Active</option>
+          <option value="relieved">Relieved</option>
+        </select>
+      </div>
+      <div class="field" id="relievingField" style="display:none">
+        <label for="f_relievingDate">Relieving date</label>
+        <input id="f_relievingDate" type="date">
+        <div class="field-error" id="err_relieving">Enter the relieving date.</div>
+      </div>
+      <div class="field">
+        <label for="f_notes">Notes</label>
+        <textarea id="f_notes" placeholder="Optional"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Save employee</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="zoneModalOverlay">
+  <div class="modal">
+    <h2>Add zone</h2>
+    <form id="zoneForm">
+      <div class="field">
+        <label for="f_zoneName">Zone name</label>
+        <input id="f_zoneName" type="text" placeholder="e.g. Kelamangalam" required>
+        <div class="field-error" id="err_zoneName">Enter a zone name, or a different one — that zone already exists.</div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="zoneCancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add zone</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="application/x-rts-legacy">
+const DEFAULT_ZONES = ["Hosur", "Shoolagiri", "Denkanikottai", "Veppanapalli"];
+const CATEGORIES = ["Wellness", "Sports", "RS"];
+const VALID_USER = "";
+const VALID_PASS = "";
+
+const EMP_KEY = "rts_employees_v1";
+const ZONES_KEY = "rts_zones_v1";
+const AUTH_KEY = "rts_authed_v1";
+const THEME_KEY = "rts_theme_v1";
+
+let employees = [];
+let ZONES = DEFAULT_ZONES.slice();
+let selectedZone = "all";
+let selectedCategory = "all";
+let statusFilter = "all";
+let searchTerm = "";
+let editingId = null;
+let confirmDeleteId = null;
+
+/* ---------- Local storage layer ---------- */
+function loadEmployees(){
+  try{
+    const raw = localStorage.getItem(EMP_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){ console.error(e); return []; }
+}
+function saveEmployees(){
+  try{ localStorage.setItem(EMP_KEY, JSON.stringify(employees)); }
+  catch(e){ console.error(e); }
+}
+function loadZones(){
+  try{
+    const raw = localStorage.getItem(ZONES_KEY);
+    return raw && JSON.parse(raw).length ? JSON.parse(raw) : DEFAULT_ZONES.slice();
+  } catch(e){ console.error(e); return DEFAULT_ZONES.slice(); }
+}
+function saveZones(){
+  try{ localStorage.setItem(ZONES_KEY, JSON.stringify(ZONES)); }
+  catch(e){ console.error(e); }
+}
+function genId(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return "id_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+}
+
+function escapeHtml(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function fmtDate(d){
+  if(!d) return "—";
+  const parts = d.split("-");
+  if(parts.length !== 3) return d;
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return parts[2] + " " + months[parseInt(parts[1],10)-1] + " " + parts[0];
+}
+
+function renderZoneTabs(){
+  const el = document.getElementById("zoneTabs");
+  const tabs = ["all", ...ZONES];
+  el.innerHTML = tabs.map(z => {
+    const label = z === "all" ? "All zones" : z;
+    const active = selectedZone === z ? "active" : "";
+    return '<button class="zone-tab ' + active + '" data-zone="' + escapeHtml(z) + '">' + escapeHtml(label) + '</button>';
+  }).join("") + '<button class="zone-tab-add" id="addZoneBtn" type="button">+ Add zone</button>';
+  el.querySelectorAll(".zone-tab").forEach(btn => {
+    btn.addEventListener("click", () => { selectedZone = btn.dataset.zone; render(); });
+  });
+  document.getElementById("addZoneBtn").addEventListener("click", openZoneModal);
+}
+
+function renderCatTabs(){
+  const el = document.getElementById("catTabs");
+  const tabs = ["all", ...CATEGORIES];
+  el.innerHTML = tabs.map(c => {
+    const label = c === "all" ? "All categories" : c;
+    const active = selectedCategory === c ? "active" : "";
+    return '<button class="cat-tab ' + active + '" data-cat="' + escapeHtml(c) + '">' + escapeHtml(label) + '</button>';
+  }).join("");
+  el.querySelectorAll(".cat-tab").forEach(btn => {
+    btn.addEventListener("click", () => { selectedCategory = btn.dataset.cat; render(); });
+  });
+}
+
+function getFiltered(){
+  return employees.filter(e => {
+    if(selectedZone !== "all" && e.zone !== selectedZone) return false;
+    if(selectedCategory !== "all" && e.category !== selectedCategory) return false;
+    if(statusFilter !== "all" && e.status !== statusFilter) return false;
+    if(searchTerm){
+      const hay = ((e.name||"") + " " + (e.designation||"") + " " + (e.phone||"")).toLowerCase();
+      if(!hay.includes(searchTerm.toLowerCase())) return false;
+    }
+    return true;
+  }).sort((a,b) => (a.name||"").localeCompare(b.name||""));
+}
+
+function renderStats(){
+  const total = employees.length;
+  const active = employees.filter(e => e.status === "active").length;
+  const relieved = employees.filter(e => e.status === "relieved").length;
+  const zoneCount = selectedZone === "all" ? ZONES.length : 1;
+  const cards = [
+    { n: total, l: "Total employees" },
+    { n: active, l: "Active" },
+    { n: relieved, l: "Relieved" },
+    { n: zoneCount, l: selectedZone === "all" ? "Zones covered" : "Zone selected" }
+  ];
+  document.getElementById("statsRow").innerHTML = cards.map(c =>
+    '<div class="stat-card"><div class="n">' + c.n + '</div><div class="l">' + c.l + '</div></div>'
+  ).join("");
+}
+
+function renderTable(){
+  const rows = getFiltered();
+  const tbody = document.getElementById("empTbody");
+  const emptyState = document.getElementById("emptyState");
+  document.getElementById("catColHeader").textContent = selectedCategory === "all" ? "Category" : "Zone";
+
+  if(rows.length === 0){
+    tbody.innerHTML = "";
+    emptyState.style.display = "block";
+    return;
+  }
+  emptyState.style.display = "none";
+
+  tbody.innerHTML = rows.map(e => {
+    const statusBadge = e.status === "relieved"
+      ? '<span class="badge badge-relieved">Relieved</span>'
+      : '<span class="badge badge-active">Active</span>';
+    const middleCol = selectedCategory === "all"
+      ? '<span class="cat-pill">' + escapeHtml(e.category || "—") + '</span>'
+      : escapeHtml(e.zone || "—");
+    const isConfirming = confirmDeleteId === e.id;
+    const actionsHtml = isConfirming
+      ? '<span class="confirm-row"><span>Remove permanently?</span>' +
+        '<button class="btn-danger-text" data-confirm-yes="' + e.id + '">Yes</button>' +
+        '<button class="btn-text" data-confirm-no="1">Cancel</button></span>'
+      : '<button class="btn-text" data-edit="' + e.id + '">Edit</button>' +
+        (e.status === "active"
+          ? '<button class="btn-text" data-relieve="' + e.id + '">Mark relieved</button>'
+          : '<button class="btn-text" data-reinstate="' + e.id + '">Reinstate</button>') +
+        '<button class="btn-danger-text" data-delete="' + e.id + '">Remove</button>';
+
+    return '<tr>' +
+      '<td><div class="emp-name">' + escapeHtml(e.name) + '</div><div class="emp-sub">' + escapeHtml(e.designation || "") + '</div></td>' +
+      '<td>' + middleCol + '</td>' +
+      '<td>' + (selectedZone === "all" ? escapeHtml(e.zone || "—") : escapeHtml(e.category || "—")) + '</td>' +
+      '<td>' + escapeHtml(e.phone || "—") + '</td>' +
+      '<td>' + fmtDate(e.joinDate) + '</td>' +
+      '<td>' + statusBadge + (e.status === "relieved" && e.relievingDate ? '<div class="emp-sub">' + fmtDate(e.relievingDate) + '</div>' : '') + '</td>' +
+      '<td class="actions-cell">' + actionsHtml + '</td>' +
+      '</tr>';
+  }).join("");
+
+  tbody.querySelectorAll("[data-edit]").forEach(b => b.addEventListener("click", () => openEditModal(b.dataset.edit)));
+  tbody.querySelectorAll("[data-relieve]").forEach(b => b.addEventListener("click", () => quickSetStatus(b.dataset.relieve, "relieved")));
+  tbody.querySelectorAll("[data-reinstate]").forEach(b => b.addEventListener("click", () => quickSetStatus(b.dataset.reinstate, "active")));
+  tbody.querySelectorAll("[data-delete]").forEach(b => b.addEventListener("click", () => { confirmDeleteId = b.dataset.delete; renderTable(); }));
+  tbody.querySelectorAll("[data-confirm-yes]").forEach(b => b.addEventListener("click", () => { deleteEmployee(b.dataset.confirmYes); }));
+  tbody.querySelectorAll("[data-confirm-no]").forEach(b => b.addEventListener("click", () => { confirmDeleteId = null; renderTable(); }));
+}
+
+function render(){
+  renderZoneTabs();
+  renderCatTabs();
+  renderStats();
+  renderTable();
+}
+
+function quickSetStatus(id, status){
+  const idx = employees.findIndex(e => e.id === id);
+  if(idx === -1) return;
+  employees[idx].status = status;
+  employees[idx].updatedAt = Date.now();
+  if(status === "relieved" && !employees[idx].relievingDate){
+    employees[idx].relievingDate = new Date().toISOString().slice(0,10);
+  }
+  if(status === "active"){
+    employees[idx].relievingDate = null;
+  }
+  saveEmployees();
+  render();
+}
+
+function deleteEmployee(id){
+  employees = employees.filter(e => e.id !== id);
+  confirmDeleteId = null;
+  saveEmployees();
+  render();
+}
+
+function populateZoneSelect(){
+  const sel = document.getElementById("f_zone");
+  sel.innerHTML = ZONES.map(z => '<option value="' + escapeHtml(z) + '">' + escapeHtml(z) + '</option>').join("");
+}
+
+function openAddModal(){
+  editingId = null;
+  document.getElementById("modalTitle").textContent = "Add employee";
+  document.getElementById("empForm").reset();
+  populateZoneSelect();
+  document.getElementById("f_zone").value = selectedZone !== "all" ? selectedZone : ZONES[0];
+  document.getElementById("f_category").value = selectedCategory !== "all" ? selectedCategory : CATEGORIES[0];
+  document.getElementById("f_status").value = "active";
+  document.getElementById("relievingField").style.display = "none";
+  clearErrors();
+  document.getElementById("modalOverlay").classList.add("open");
+}
+
+function openEditModal(id){
+  const e = employees.find(x => x.id === id);
+  if(!e) return;
+  editingId = id;
+  document.getElementById("modalTitle").textContent = "Edit employee";
+  populateZoneSelect();
+  document.getElementById("f_name").value = e.name || "";
+  document.getElementById("f_designation").value = e.designation || "";
+  document.getElementById("f_zone").value = e.zone || ZONES[0];
+  document.getElementById("f_category").value = e.category || CATEGORIES[0];
+  document.getElementById("f_phone").value = e.phone || "";
+  document.getElementById("f_joinDate").value = e.joinDate || "";
+  document.getElementById("f_status").value = e.status || "active";
+  document.getElementById("f_relievingDate").value = e.relievingDate || "";
+  document.getElementById("f_notes").value = e.notes || "";
+  document.getElementById("relievingField").style.display = e.status === "relieved" ? "block" : "none";
+  clearErrors();
+  document.getElementById("modalOverlay").classList.add("open");
+}
+
+function closeModal(){ document.getElementById("modalOverlay").classList.remove("open"); }
+
+function clearErrors(){
+  document.getElementById("err_name").classList.remove("show");
+  document.getElementById("err_relieving").classList.remove("show");
+}
+
+function submitForm(ev){
+  ev.preventDefault();
+  clearErrors();
+  const name = document.getElementById("f_name").value.trim();
+  const status = document.getElementById("f_status").value;
+  const relievingDate = document.getElementById("f_relievingDate").value;
+  let hasError = false;
+  if(!name){ document.getElementById("err_name").classList.add("show"); hasError = true; }
+  if(status === "relieved" && !relievingDate){ document.getElementById("err_relieving").classList.add("show"); hasError = true; }
+  if(hasError) return;
+
+  const data = {
+    name,
+    designation: document.getElementById("f_designation").value.trim(),
+    zone: document.getElementById("f_zone").value,
+    category: document.getElementById("f_category").value,
+    phone: document.getElementById("f_phone").value.trim(),
+    joinDate: document.getElementById("f_joinDate").value,
+    status,
+    relievingDate: status === "relieved" ? relievingDate : null,
+    notes: document.getElementById("f_notes").value.trim(),
+    updatedAt: Date.now()
+  };
+
+  if(editingId){
+    const idx = employees.findIndex(e => e.id === editingId);
+    if(idx !== -1) employees[idx] = { ...employees[idx], ...data };
+  } else {
+    data.id = genId();
+    data.createdAt = Date.now();
+    employees.push(data);
+  }
+  saveEmployees();
+  closeModal();
+  render();
+}
+
+function openZoneModal(){
+  document.getElementById("zoneForm").reset();
+  document.getElementById("err_zoneName").classList.remove("show");
+  document.getElementById("zoneModalOverlay").classList.add("open");
+}
+function closeZoneModal(){ document.getElementById("zoneModalOverlay").classList.remove("open"); }
+
+function submitZoneForm(ev){
+  ev.preventDefault();
+  const input = document.getElementById("f_zoneName");
+  const name = input.value.trim();
+  const err = document.getElementById("err_zoneName");
+  err.classList.remove("show");
+  const exists = ZONES.some(z => z.toLowerCase() === name.toLowerCase());
+  if(!name || exists){ err.classList.add("show"); return; }
+  ZONES.push(name);
+  saveZones();
+  populateZoneSelect();
+  closeZoneModal();
+  render();
+}
+
+function csvEscape(v){
+  const s = String(v == null ? "" : v);
+  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function exportCsv(){
+  const rows = getFiltered();
+  const header = ["Name","Designation","Zone","Category","Phone","Join date","Status","Relieving date","Notes"];
+  const lines = [header.join(",")];
+  rows.forEach(e => {
+    lines.push([e.name, e.designation, e.zone, e.category, e.phone, e.joinDate, e.status, e.relievingDate, e.notes].map(csvEscape).join(","));
+  });
+  const csv = lines.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rts-employees.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- Auth ---------- */
+function showApp(){
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("appRoot").style.display = "block";
+}
+function showLogin(){
+  document.getElementById("appRoot").style.display = "none";
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("loginError").classList.remove("show");
+  const form = document.getElementById("loginForm");
+  if(form) form.reset();
+}
+
+/* ---------- Theme ---------- */
+function updateThemeIcon(theme){
+  document.getElementById("iconSun").style.display = theme === "dark" ? "block" : "none";
+  document.getElementById("iconMoon").style.display = theme === "dark" ? "none" : "block";
+}
+
+/* ---------- Wire up events ---------- */
+document.getElementById("loginForm").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const u = document.getElementById("l_user").value.trim();
+  const p = document.getElementById("l_pass").value;
+  if(u === VALID_USER && p === VALID_PASS){
+    try{ localStorage.setItem(AUTH_KEY, "true"); } catch(e){}
+    showApp();
+  } else {
+    document.getElementById("loginError").classList.add("show");
+  }
+});
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  try{ localStorage.removeItem(AUTH_KEY); } catch(e){}
+  showLogin();
+});
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme") || "light";
+  const next = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try{ localStorage.setItem(THEME_KEY, next); } catch(e){}
+  updateThemeIcon(next);
+});
+document.getElementById("addBtn").addEventListener("click", openAddModal);
+document.getElementById("cancelBtn").addEventListener("click", closeModal);
+document.getElementById("modalOverlay").addEventListener("click", (ev) => { if(ev.target.id === "modalOverlay") closeModal(); });
+document.getElementById("empForm").addEventListener("submit", submitForm);
+document.getElementById("f_status").addEventListener("change", (ev) => {
+  document.getElementById("relievingField").style.display = ev.target.value === "relieved" ? "block" : "none";
+});
+document.getElementById("searchInput").addEventListener("input", (ev) => { searchTerm = ev.target.value; renderTable(); });
+document.getElementById("statusFilter").addEventListener("change", (ev) => { statusFilter = ev.target.value; renderStats(); renderTable(); });
+document.getElementById("exportBtn").addEventListener("click", exportCsv);
+document.getElementById("zoneCancelBtn").addEventListener("click", closeZoneModal);
+document.getElementById("zoneModalOverlay").addEventListener("click", (ev) => { if(ev.target.id === "zoneModalOverlay") closeZoneModal(); });
+document.getElementById("zoneForm").addEventListener("submit", submitZoneForm);
+
+/* ---------- Init ---------- */
+(function initTheme(){
+  let stored = null;
+  try{ stored = localStorage.getItem(THEME_KEY); } catch(e){}
+  const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const theme = stored || (systemDark ? "dark" : "light");
+  document.documentElement.setAttribute("data-theme", theme);
+  updateThemeIcon(theme);
+})();
+
+(function initAuth(){
+  let authed = false;
+  try{ authed = localStorage.getItem(AUTH_KEY) === "true"; } catch(e){}
+  if(authed) showApp(); else showLogin();
+})();
+
+employees = loadEmployees();
+ZONES = loadZones();
+populateZoneSelect();
+render();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="./config.js"></script>
+<script src="./app.js"></script>
+
+</body>
+</html>
